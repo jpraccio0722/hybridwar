@@ -1,0 +1,292 @@
+[
+  {
+    "id": "grey_horizon",
+    "name": "Operation Grey Horizon",
+    "tagline": "A regional power. A neighbour under pressure. A conflict that hasn't started yet.",
+    "briefing": "You command the strategic apparatus of Valdoria, a mid-sized regional power with ambitions to reabsorb the neighbouring state of Estmark — a former province now aligned with a Western bloc. Direct military action is off the table. The international environment is hostile to overt aggression. Your task: achieve strategic objectives through all instruments of state power before the adversary consolidates its alliances.",
+    "conflict_phase": 1,
+    "player": {
+      "name": "Valdoria",
+      "doctrine_label": "Hybrid / Escalation Dominance",
+      "power": {
+        "military": 68,
+        "economic": 55,
+        "information": 75,
+        "political": 48,
+        "covert": 72
+      },
+      "domain_levels": {
+        "non_military": 0,
+        "information": 0,
+        "military": 0
+      }
+    },
+    "adversary": {
+      "name": "Estmark",
+      "doctrine": "defensive",
+      "doctrine_label": "Defensive / Alliance-Dependent",
+      "power": {
+        "military": 62,
+        "economic": 70,
+        "information": 55,
+        "political": 65,
+        "covert": 45
+      },
+      "domain_levels": {
+        "non_military": 0,
+        "information": 0,
+        "military": 0
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "econ_pol_capture",
+          "label": "Political-Economic Capture",
+          "description": "Estmark's economy and political standing collapse under sustained pressure.",
+          "check": "adversary_multi_below",
+          "dims": ["economic", "political"],
+          "thresholds": [12, 18],
+          "resolution_text": "Estmark's economy and political cohesion have collapsed under sustained hybrid pressure. The state can no longer resist Valdoria's terms. Strategic objectives achieved."
+        },
+        {
+          "id": "narrative_blackout",
+          "label": "Narrative and Intelligence Blackout",
+          "description": "Estmark's covert and information apparatus are neutralised.",
+          "check": "adversary_multi_below",
+          "dims": ["covert", "information"],
+          "thresholds": [10, 15],
+          "resolution_text": "Estmark's intelligence services and media apparatus are neutralised. The population is disoriented; the leadership is blind. Without covert capacity or narrative control, Estmark capitulates."
+        },
+        {
+          "id": "valdoria_multi_collapse",
+          "label": "Strategic Collapse",
+          "description": "Two or more of Estmark's power dimensions fall to critical levels.",
+          "check": "adversary_dims_critical",
+          "threshold": 15,
+          "min_count": 2,
+          "resolution_text": "Multiple power dimensions have failed simultaneously. Estmark can no longer function as a coherent state. Valdoria achieves strategic dominance."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "campaign_degraded",
+          "label": "Hybrid Campaign Degraded",
+          "description": "Valdoria's covert and information capabilities are neutralised.",
+          "check": "player_multi_below",
+          "dims": ["covert", "information"],
+          "thresholds": [15, 15],
+          "resolution_text": "Valdoria's grey zone toolkit has been neutralised. Without covert reach and information dominance, the hybrid pressure campaign collapses. Estmark's sovereignty is preserved."
+        },
+        {
+          "id": "valdoria_overextended",
+          "label": "Aggressor Overextended",
+          "description": "The cost of sustained hybrid operations breaks Valdoria's economy.",
+          "check": "player_dim_below",
+          "dim": "economic",
+          "threshold": 12,
+          "resolution_text": "The cost of sustained hybrid operations has broken Valdoria's economy. The campaign is no longer sustainable. Estmark survives."
+        },
+        {
+          "id": "alliance_consolidation",
+          "label": "Alliance Consolidation",
+          "description": "Estmark survives long enough to secure committed international support.",
+          "check": "adversary_survive_turns",
+          "min_turn": 16,
+          "min_avg": 42,
+          "resolution_text": "Estmark has survived long enough to secure committed international support. Valdoria's window of opportunity has closed. The hybrid campaign fails to achieve its objectives."
+        }
+      ]
+    }
+  },
+  {
+    "id": "iron_curtain",
+    "name": "Iron Curtain Rising",
+    "tagline": "Your state is the target. Adversary pressure is already building.",
+    "briefing": "You are the government of Kalthenia, a small democracy facing a coordinated pressure campaign from the authoritarian Drevak Federation. Drevak has already begun information operations and is funding domestic opposition. Your task: resist destabilisation, maintain alliance support, and deter escalation — while avoiding actions that would justify a military response.",
+    "conflict_phase": 2,
+    "player": {
+      "name": "Kalthenia",
+      "doctrine_label": "Defensive / Alliance-Anchored",
+      "power": {
+        "military": 52,
+        "economic": 65,
+        "information": 60,
+        "political": 72,
+        "covert": 40
+      },
+      "domain_levels": {
+        "non_military": 1,
+        "information": 2,
+        "military": 0
+      }
+    },
+    "adversary": {
+      "name": "Drevak Federation",
+      "doctrine": "aggressive",
+      "doctrine_label": "Aggressive / Escalation-Dominant",
+      "power": {
+        "military": 80,
+        "economic": 62,
+        "information": 78,
+        "political": 45,
+        "covert": 68
+      },
+      "domain_levels": {
+        "non_military": 2,
+        "information": 3,
+        "military": 1
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "drevak_isolated",
+          "label": "International Isolation",
+          "description": "Drevak's campaign is exposed and condemned — political power collapses.",
+          "check": "adversary_dim_below",
+          "dim": "political",
+          "threshold": 15,
+          "resolution_text": "Drevak's coordinated pressure campaign has been exposed and internationally condemned. Sanctions coalesce, alliances fracture. Drevak is isolated and the campaign collapses."
+        },
+        {
+          "id": "campaign_infrastructure_broken",
+          "label": "Campaign Infrastructure Collapse",
+          "description": "Drevak's economic base and propaganda apparatus fail simultaneously.",
+          "check": "adversary_multi_below",
+          "dims": ["economic", "information"],
+          "thresholds": [15, 18],
+          "resolution_text": "Drevak's economic base and propaganda apparatus have both failed. The destabilisation campaign has no resources to draw on and can no longer sustain operations. Kalthenia survives."
+        },
+        {
+          "id": "drevak_collapse",
+          "label": "Strategic Collapse",
+          "description": "Two or more of Drevak's power dimensions fall to critical levels.",
+          "check": "adversary_dims_critical",
+          "threshold": 15,
+          "min_count": 2,
+          "resolution_text": "Drevak's multi-domain pressure campaign has been turned back. The adversary state faces multi-dimensional collapse. Kalthenia's resistance holds."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "government_in_crisis",
+          "label": "Government in Crisis",
+          "description": "Kalthenia's political institutions fracture under hybrid pressure.",
+          "check": "player_dim_below",
+          "dim": "political",
+          "threshold": 15,
+          "resolution_text": "Kalthenia's political institutions have fractured under Drevak's sustained hybrid pressure. The government can no longer maintain coherent resistance. Drevak's destabilisation campaign succeeds."
+        },
+        {
+          "id": "societal_fracture",
+          "label": "Societal Fracture",
+          "description": "Drevak-backed narratives dominate; information and political will collapse together.",
+          "check": "player_multi_below",
+          "dims": ["information", "political"],
+          "thresholds": [10, 20],
+          "resolution_text": "Drevak-backed narratives dominate the information space. With political will broken and media captured, Kalthenia's resistance collapses. The destabilisation campaign achieves its objectives."
+        },
+        {
+          "id": "kalthenia_collapse",
+          "label": "State Destabilisation",
+          "description": "Two or more of Kalthenia's power dimensions fall to critical levels.",
+          "check": "player_dims_critical",
+          "threshold": 15,
+          "min_count": 2,
+          "resolution_text": "Kalthenia's state capacity has collapsed across multiple dimensions. Drevak's campaign has succeeded in comprehensively destabilising the target state."
+        }
+      ]
+    }
+  },
+  {
+    "id": "shadow_protocol",
+    "name": "Shadow Protocol",
+    "tagline": "Great power. Proxy war. Global stakes.",
+    "briefing": "You direct the strategic operations of Hegemonia, a great power managing a multi-layered proxy conflict against rival Austeria. Both states are nuclear-armed; direct military confrontation is forbidden. The battlespace is economic, informational, and covert. You must achieve decisive strategic advantage before the domestic political window closes.",
+    "conflict_phase": 3,
+    "player": {
+      "name": "Hegemonia",
+      "doctrine_label": "Hybrid / Multi-Domain Escalation",
+      "power": {
+        "military": 82,
+        "economic": 78,
+        "information": 72,
+        "political": 65,
+        "covert": 80
+      },
+      "domain_levels": {
+        "non_military": 2,
+        "information": 3,
+        "military": 2
+      }
+    },
+    "adversary": {
+      "name": "Austeria",
+      "doctrine": "hybrid",
+      "doctrine_label": "Hybrid / Mirror Strategy",
+      "power": {
+        "military": 80,
+        "economic": 72,
+        "information": 68,
+        "political": 70,
+        "covert": 75
+      },
+      "domain_levels": {
+        "non_military": 2,
+        "information": 3,
+        "military": 1
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "dual_domain_supremacy",
+          "label": "Dual-Domain Supremacy",
+          "description": "Austeria's economic and information power collapse simultaneously.",
+          "check": "adversary_multi_below",
+          "dims": ["economic", "information"],
+          "thresholds": [18, 18],
+          "resolution_text": "Hegemonia has achieved decisive economic and information advantage. Austeria can no longer compete across the primary battlespaces. The proxy conflict resolves in Hegemonia's favour."
+        },
+        {
+          "id": "austeria_collapse",
+          "label": "Strategic Collapse",
+          "description": "Two or more of Austeria's power dimensions fall to critical levels.",
+          "check": "adversary_dims_critical",
+          "threshold": 15,
+          "min_count": 2,
+          "resolution_text": "Austeria's multi-dimensional failure confirms Hegemonia's decisive strategic advantage. The rival great power can no longer sustain the competition."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "domestic_window_closed",
+          "label": "Domestic Window Closes",
+          "description": "Hegemonia's political coalition collapses; the mission is aborted.",
+          "check": "player_dim_below",
+          "dim": "political",
+          "threshold": 15,
+          "resolution_text": "Hegemonia's political coalition has collapsed. The domestic window for strategic action has closed without achieving decisive advantage. Austeria's strategy of endurance succeeds."
+        },
+        {
+          "id": "hegemonia_exhausted",
+          "label": "Economic Exhaustion",
+          "description": "The cost of multi-domain competition bankrupts Hegemonia.",
+          "check": "player_dim_below",
+          "dim": "economic",
+          "threshold": 15,
+          "resolution_text": "Hegemonia's multi-domain campaign has exhausted the state's economic resources. The rival great power cannot sustain the competition. Austeria outlasts the adversary."
+        },
+        {
+          "id": "endurance_victory",
+          "label": "Endurance Victory",
+          "description": "Austeria outlasts Hegemonia's strategic timeline — still standing at turn 15.",
+          "check": "adversary_outlasts_player",
+          "min_turn": 15,
+          "resolution_text": "Austeria has outlasted Hegemonia's strategic timeline. The domestic political window has closed without Hegemonia achieving decisive advantage. The mirror strategy succeeds — by enduring, Austeria wins."
+        }
+      ]
+    }
+  }
+]

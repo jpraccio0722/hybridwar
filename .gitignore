@@ -1,0 +1,7 @@
+.idea
+node_modules
+.env
+dist
+strategic_simulation_design.md
+.DS_Store
+.claude/
