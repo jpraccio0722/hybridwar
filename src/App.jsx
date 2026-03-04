@@ -16,14 +16,21 @@ import {
   computeStrategicAdvantage,
 } from './utils/gameEngine'
 import { resolveAction, tickActiveOperations, computeForcedCosts } from './utils/resolver'
-import { aiSelectAction, getAvailableActions } from './utils/aiActor'
+import { aiSelectAction, getAvailableActions, generateDoctrineWeights } from './utils/aiActor'
 import { computeIntelligenceAccuracy } from './utils/fogOfWar'
 import { buildAIPayload, parseAIResponse } from './utils/aiPrompt'
 
 const EDGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-move`
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+const DEBUG_AI = import.meta.env.VITE_DEBUG_AI === 'true'
 
 async function callEdgeFunction(systemPrompt, userPrompt) {
+  if (DEBUG_AI) {
+    console.group('[AI DEBUG] Outgoing prompt')
+    console.log('%cSYSTEM PROMPT\n', 'font-weight:bold', systemPrompt)
+    console.log('%cUSER PROMPT\n', 'font-weight:bold', userPrompt)
+    console.groupEnd()
+  }
   const res = await fetch(EDGE_URL, {
     method: 'POST',
     headers: {
@@ -33,7 +40,13 @@ async function callEdgeFunction(systemPrompt, userPrompt) {
     body: JSON.stringify({ systemPrompt, userPrompt }),
   })
   if (!res.ok) throw new Error(`Edge function error: ${res.status}`)
-  return res.json()
+  const data = await res.json()
+  if (DEBUG_AI) {
+    console.group('[AI DEBUG] Raw LLM response')
+    console.log(data)
+    console.groupEnd()
+  }
+  return data
 }
 
 const initialAppState = {
@@ -219,6 +232,7 @@ function gameReducer(state, action) {
             name: scenario.adversary.name,
             doctrine: scenario.adversary.doctrine,
             doctrine_label: scenario.adversary.doctrine_label,
+            doctrine_weights: generateDoctrineWeights(scenario.adversary.doctrine),
             power: { ...scenario.adversary.power },
             domain_levels: { ...scenario.adversary.domain_levels },
             active_operations: [],

@@ -28,9 +28,28 @@ const DOCTRINE_WEIGHTS = {
   },
 }
 
+// Generate randomised doctrine weights at game start — stored in adversary state
+// so the same personality persists for the whole game.
+export function generateDoctrineWeights(doctrine) {
+  const base = DOCTRINE_WEIGHTS[doctrine] ?? DOCTRINE_WEIGHTS.hybrid
+
+  function jitter(value, range, min = 0.1, max = 2.0) {
+    return Math.min(max, Math.max(min, value + (Math.random() * 2 - 1) * range))
+  }
+
+  return {
+    non_military:   jitter(base.non_military,   0.30),
+    information:    jitter(base.information,     0.30),
+    military:       jitter(base.military,        0.40),
+    de_escalation:  jitter(base.de_escalation,   0.25, 0.05),
+    risk_tolerance: jitter(base.risk_tolerance,  0.30, 0.30, 1.8),
+  }
+}
+
 export function aiSelectAction(adversaryState, playerState, intelligenceAccuracy) {
   const doctrine = adversaryState.doctrine ?? 'hybrid'
-  const weights = DOCTRINE_WEIGHTS[doctrine] ?? DOCTRINE_WEIGHTS.hybrid
+  // Use pre-generated weights if available (set at game start), otherwise fall back to fixed
+  const weights = adversaryState.doctrine_weights ?? DOCTRINE_WEIGHTS[doctrine] ?? DOCTRINE_WEIGHTS.hybrid
 
   // Filter available actions
   const available = getAvailableActions(adversaryState, playerState)
