@@ -57,15 +57,6 @@
           "dims": ["covert", "information"],
           "thresholds": [10, 15],
           "resolution_text": "Estmark's intelligence services and media apparatus are neutralised. The population is disoriented; the leadership is blind. Without covert capacity or narrative control, Estmark capitulates."
-        },
-        {
-          "id": "valdoria_multi_collapse",
-          "label": "Strategic Collapse",
-          "description": "Two or more of Estmark's power dimensions fall to critical levels.",
-          "check": "adversary_dims_critical",
-          "threshold": 15,
-          "min_count": 2,
-          "resolution_text": "Multiple power dimensions have failed simultaneously. Estmark can no longer function as a coherent state. Valdoria achieves strategic dominance."
         }
       ],
       "adversary": [
@@ -157,15 +148,6 @@
           "dims": ["economic", "information"],
           "thresholds": [15, 18],
           "resolution_text": "Drevak's economic base and propaganda apparatus have both failed. The destabilisation campaign has no resources to draw on and can no longer sustain operations. Kalthenia survives."
-        },
-        {
-          "id": "drevak_collapse",
-          "label": "Strategic Collapse",
-          "description": "Two or more of Drevak's power dimensions fall to critical levels.",
-          "check": "adversary_dims_critical",
-          "threshold": 15,
-          "min_count": 2,
-          "resolution_text": "Drevak's multi-domain pressure campaign has been turned back. The adversary state faces multi-dimensional collapse. Kalthenia's resistance holds."
         }
       ],
       "adversary": [
@@ -186,15 +168,6 @@
           "dims": ["information", "political"],
           "thresholds": [10, 20],
           "resolution_text": "Drevak-backed narratives dominate the information space. With political will broken and media captured, Kalthenia's resistance collapses. The destabilisation campaign achieves its objectives."
-        },
-        {
-          "id": "kalthenia_collapse",
-          "label": "State Destabilisation",
-          "description": "Two or more of Kalthenia's power dimensions fall to critical levels.",
-          "check": "player_dims_critical",
-          "threshold": 15,
-          "min_count": 2,
-          "resolution_text": "Kalthenia's state capacity has collapsed across multiple dimensions. Drevak's campaign has succeeded in comprehensively destabilising the target state."
         }
       ]
     }
@@ -248,15 +221,6 @@
           "dims": ["economic", "information"],
           "thresholds": [18, 18],
           "resolution_text": "Hegemonia has achieved decisive economic and information advantage. Austeria can no longer compete across the primary battlespaces. The proxy conflict resolves in Hegemonia's favour."
-        },
-        {
-          "id": "austeria_collapse",
-          "label": "Strategic Collapse",
-          "description": "Two or more of Austeria's power dimensions fall to critical levels.",
-          "check": "adversary_dims_critical",
-          "threshold": 15,
-          "min_count": 2,
-          "resolution_text": "Austeria's multi-dimensional failure confirms Hegemonia's decisive strategic advantage. The rival great power can no longer sustain the competition."
         }
       ],
       "adversary": [

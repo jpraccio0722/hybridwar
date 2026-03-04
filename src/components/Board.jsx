@@ -8,10 +8,10 @@ import History from './History'
 import WinConditions from './WinConditions'
 
 const TABS = [
-  { id: 'situation', label: 'Situation' },
-  { id: 'intel', label: 'Intel' },
-  { id: 'actions', label: 'Actions' },
-  { id: 'history', label: 'History' },
+    { id: 'actions', label: 'Actions' },
+    { id: 'situation', label: 'Situation' },
+    { id: 'intel', label: 'Intel' },
+    { id: 'history', label: 'History' },
 ]
 
 export default function Board({ gameState, turn, onPlayerAction, onCancelOperation }) {
@@ -25,6 +25,7 @@ export default function Board({ gameState, turn, onPlayerAction, onCancelOperati
         adversaryDomains={adversary.domain_levels}
         turn={turn}
         strategicAdvantage={gameState.strategicAdvantage ?? 0}
+        playerPower={player.power}
       />
 
       {/* Mobile tab navigation */}

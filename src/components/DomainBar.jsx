@@ -31,7 +31,22 @@ function getAdvantageValueClass(adv) {
   return 'adv-value--neutral'
 }
 
-export default function DomainBar({ playerDomains, adversaryDomains, turn, strategicAdvantage }) {
+const POWER_ABBREV = {
+  military: 'MP',
+  economic: 'EP',
+  information: 'IP',
+  political: 'PP',
+  covert: 'CP',
+}
+
+function getPowerClass(score) {
+  if (score >= 60) return 'pstat--high'
+  if (score >= 35) return 'pstat--medium'
+  if (score >= 15) return 'pstat--low'
+  return 'pstat--critical'
+}
+
+export default function DomainBar({ playerDomains, adversaryDomains, turn, strategicAdvantage, playerPower }) {
   const phase = getConflictPhase(playerDomains)
 
   // Bar layout: center = 50%. Player (blue) fills from left; adversary (red) from right.
@@ -54,6 +69,18 @@ export default function DomainBar({ playerDomains, adversaryDomains, turn, strat
           <span className="phase-name">{CONFLICT_PHASES[phase]}</span>
         </div>
       </div>
+
+      {/* Compact power strip */}
+      {playerPower && (
+        <div className="power-strip">
+          {Object.entries(playerPower).map(([dim, score]) => (
+            <div key={dim} className="pstat">
+              <span className="pstat__abbrev">{POWER_ABBREV[dim]}</span>
+              <span className={`pstat__score ${getPowerClass(score)}`}>{score}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Strategic Advantage meter */}
       <div className="advantage-strip">

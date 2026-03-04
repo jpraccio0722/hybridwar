@@ -548,6 +548,49 @@ body {
 }
 
 /* ----------------------------------------------------------------
+   Compact power strip — DomainBar
+   ---------------------------------------------------------------- */
+.power-strip {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-surface-2);
+  flex-wrap: wrap;
+}
+
+.pstat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+}
+
+.pstat__abbrev {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.pstat__score {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.pstat--high     { color: var(--power-high); }
+.pstat--medium   { color: var(--power-medium); }
+.pstat--low      { color: var(--power-low); }
+.pstat--critical { color: var(--power-critical); }
+
+/* ----------------------------------------------------------------
    Strategic Advantage — DomainBar persistent meter
    ---------------------------------------------------------------- */
 .advantage-strip {
@@ -1406,21 +1449,61 @@ body {
 }
 
 .history-table-wrap {
-  max-height: 320px;
+  max-height: 420px;
   overflow-y: auto;
 }
 
-.history-outcome {
+.history-table td { white-space: nowrap; }
+.history-table td.td-narrative { white-space: normal; }
+
+/* Outcome badges */
+.outcome-badge {
+  display: inline-block;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+.outcome-badge--success { background: var(--bg-success); color: var(--color-success); }
+.outcome-badge--partial { background: var(--bg-warning); color: var(--color-warning); }
+.outcome-badge--fail    { background: var(--bg-danger);  color: var(--color-danger); }
+
+/* Inline event tags (attribution, counter-strike) */
+.event-tag {
+  display: inline-block;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 2px;
+}
+.event-tag--warn   { background: var(--bg-warning); color: var(--color-warning); }
+.event-tag--danger { background: var(--bg-danger);  color: var(--color-danger); }
+
+/* Advantage delta */
+.adv-delta {
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
+.adv-delta--pos     { color: var(--color-success); }
+.adv-delta--neg     { color: var(--color-danger); }
+.adv-delta--neutral { color: var(--text-muted); }
 
-.history-outcome--success { color: var(--color-success); }
-.history-outcome--fail    { color: var(--color-warning); }
-
-.history-action {
+/* Narrative sub-row */
+.tr-narrative td { padding-top: 0; padding-bottom: var(--space-3); }
+.td-narrative {
   font-size: 0.75rem;
   color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.4;
+  white-space: normal !important;
 }
 
 .history-entry__events {
