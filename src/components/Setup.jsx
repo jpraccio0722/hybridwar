@@ -26,7 +26,6 @@ export default function Setup({ onStartGame }) {
               onClick={() => setSelected(scenario)}
               aria-pressed={selected?.id === scenario.id}
             >
-              <div className="scenario-card__phase">Scenario {scenario.conflict_phase}</div>
               <h3 className="scenario-card__name">{scenario.name}</h3>
               <p className="scenario-card__tagline">{scenario.tagline}</p>
               <div className="scenario-card__factions">

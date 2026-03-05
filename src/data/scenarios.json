@@ -173,6 +173,188 @@
     }
   },
   {
+    "id": "succession_crisis",
+    "name": "The Succession Crisis",
+    "tagline": "A regime in crisis. A window of five turns. Choose your leverage carefully.",
+    "briefing": "The Volantian Supreme Director has died after a prolonged illness. The inner circle is fractured between a hardline military faction and a reformist technocrat bloc competing for control. Your intelligence assets in Volantica are well-placed and your covert networks run deep. The window will not last — if the hardliners consolidate power, the threat to your region intensifies dramatically. Move before they close ranks. Exploit the vacuum. Don't let them recover.",
+    "conflict_phase": 2,
+    "player": {
+      "name": "Mirastan",
+      "doctrine_label": "Hybrid / Opportunistic Strike",
+      "power": {
+        "military": 60,
+        "economic": 50,
+        "information": 78,
+        "political": 65,
+        "covert": 82
+      },
+      "domain_levels": {
+        "non_military": 1,
+        "information": 2,
+        "military": 0
+      }
+    },
+    "adversary": {
+      "name": "Volantian Regime",
+      "doctrine": "aggressive",
+      "doctrine_label": "Aggressive / Internal Consolidation",
+      "power": {
+        "military": 78,
+        "economic": 58,
+        "information": 45,
+        "political": 38,
+        "covert": 72
+      },
+      "domain_levels": {
+        "non_military": 2,
+        "information": 3,
+        "military": 2
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "regime_collapse",
+          "label": "Regime Collapse",
+          "description": "The succession vacuum deepens into full collapse — political legitimacy and economic capacity fail together.",
+          "check": "adversary_multi_below",
+          "dims": ["political", "economic"],
+          "thresholds": [12, 18],
+          "resolution_text": "The Volantian inner circle has imploded. With political legitimacy exhausted and the economy in freefall, the regime cannot hold. The hardline faction is finished. Mirastan's strategic objectives are achieved before consolidation could begin."
+        },
+        {
+          "id": "intelligence_decapitation",
+          "label": "Intelligence Decapitation",
+          "description": "The hardline faction's covert apparatus and political standing are destroyed simultaneously.",
+          "check": "adversary_multi_below",
+          "dims": ["covert", "political"],
+          "thresholds": [10, 15],
+          "resolution_text": "Volantica's covert networks are burned. The hardline faction — blind, delegitimised, and unable to operate — loses its grip on the succession. The window Mirastan needed has been pried open permanently."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "consolidation_complete",
+          "label": "Consolidation Complete",
+          "description": "The hardliners survive long enough to close ranks and restore regime coherence.",
+          "check": "adversary_survive_turns",
+          "min_turn": 14,
+          "min_avg": 45,
+          "resolution_text": "The hardline faction has consolidated power. The succession crisis is over — on their terms. With internal control restored, the Volantian Regime turns its full attention outward. Mirastan's window of opportunity has closed permanently."
+        },
+        {
+          "id": "counter_narrative_victory",
+          "label": "Counter-Narrative Victory",
+          "description": "Volantica's information operations expose and neutralise Mirastan's influence campaign.",
+          "check": "player_dim_below",
+          "dim": "information",
+          "threshold": 15,
+          "resolution_text": "The Volantian regime's counter-propaganda apparatus has dismantled Mirastan's information operations. The influence campaign is exposed, international sympathy evaporates, and Mirastan is left isolated and discredited."
+        },
+        {
+          "id": "opposition_crushed",
+          "label": "Opposition Crushed",
+          "description": "Mirastan's covert networks are rolled up and political will shattered.",
+          "check": "player_multi_below",
+          "dims": ["covert", "political"],
+          "thresholds": [12, 20],
+          "resolution_text": "Volantian security services have systematically dismantled Mirastan's covert networks. With assets burned and political credibility in ruins, the opportunistic campaign collapses. The hardline faction thanks them for the distraction."
+        }
+      ]
+    }
+  },
+  {
+    "id": "digital_cold_war",
+    "name": "Digital Cold War",
+    "tagline": "No bullets. No borders crossed. The war is in the signal.",
+    "briefing": "Nexora and the Syndikron operate in permanent grey-zone tension. Neither state has appetite for conventional war — the consequences are symmetrically catastrophic. Instead, both sides fight continuously through cyber operations, influence networks, and covert infrastructure. Nexora's national elections are six months away. Syndikron is betting it can fracture domestic consensus, contaminate the information environment, and install a sympathetic government before the vote. Your task: secure the information space, burn their networks, and hold your society together.",
+    "conflict_phase": 1,
+    "player": {
+      "name": "Nexora",
+      "doctrine_label": "Defensive / Information Resilience",
+      "power": {
+        "military": 38,
+        "economic": 55,
+        "information": 88,
+        "political": 68,
+        "covert": 78
+      },
+      "domain_levels": {
+        "non_military": 0,
+        "information": 2,
+        "military": 0
+      }
+    },
+    "adversary": {
+      "name": "Syndikron",
+      "doctrine": "hybrid",
+      "doctrine_label": "Hybrid / Cyber Subversion",
+      "power": {
+        "military": 52,
+        "economic": 48,
+        "information": 82,
+        "political": 55,
+        "covert": 88
+      },
+      "domain_levels": {
+        "non_military": 1,
+        "information": 3,
+        "military": 0
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "network_supremacy",
+          "label": "Network Supremacy",
+          "description": "Syndikron's information apparatus and covert infrastructure are dismantled.",
+          "check": "adversary_multi_below",
+          "dims": ["information", "covert"],
+          "thresholds": [12, 15],
+          "resolution_text": "Syndikron's cyber and influence networks are dark. Their infrastructure is burnt, their operators exposed, their ability to penetrate Nexora's information space permanently degraded. The elections proceed on Nexora's terms."
+        },
+        {
+          "id": "societal_anchor",
+          "label": "Societal Anchor",
+          "description": "Syndikron's political standing collapses internationally while their narrative capacity is destroyed.",
+          "check": "adversary_multi_below",
+          "dims": ["political", "information"],
+          "thresholds": [15, 20],
+          "resolution_text": "Syndikron's interference has been exposed on the world stage. International condemnation mounts as their propaganda apparatus collapses. Nexora's institutions hold, the election is secure, and the adversary is isolated."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "digital_occupation",
+          "label": "Digital Occupation",
+          "description": "Nexora's information environment is fully compromised — the signal belongs to Syndikron.",
+          "check": "player_dim_below",
+          "dim": "information",
+          "threshold": 10,
+          "resolution_text": "Nexora's information space is occupied. Every channel carries Syndikron's narrative. Citizens cannot distinguish authentic communication from manufactured reality. The elections — if they occur at all — will not be Nexora's."
+        },
+        {
+          "id": "election_interference",
+          "label": "Election Interference",
+          "description": "Nexora's political will and information resilience collapse simultaneously before the vote.",
+          "check": "player_multi_below",
+          "dims": ["political", "information"],
+          "thresholds": [15, 20],
+          "resolution_text": "Syndikron's influence operation has worked. Nexora's political consensus has fractured and the information environment is poisoned. The elections produce a crisis of legitimacy. Syndikron wins without firing a shot."
+        },
+        {
+          "id": "persistence_doctrine",
+          "label": "Persistence Doctrine",
+          "description": "Syndikron weathers all countermeasures and remains intact past the election window.",
+          "check": "adversary_survive_turns",
+          "min_turn": 18,
+          "min_avg": 48,
+          "resolution_text": "Syndikron's doctrine of persistent subthreshold pressure has prevailed. Without a decisive takedown, Nexora's countermeasures ran out of time. The election cycle closes with Syndikron's networks intact and ready for the next opportunity."
+        }
+      ]
+    }
+  },
+  {
     "id": "shadow_protocol",
     "name": "Shadow Protocol",
     "tagline": "Great power. Proxy war. Global stakes.",
@@ -249,6 +431,97 @@
           "check": "adversary_outlasts_player",
           "min_turn": 15,
           "resolution_text": "Austeria has outlasted Hegemonia's strategic timeline. The domestic political window has closed without Hegemonia achieving decisive advantage. The mirror strategy succeeds — by enduring, Austeria wins."
+        }
+      ]
+    }
+  },
+  {
+    "id": "resource_horizon",
+    "name": "Resource Horizon",
+    "tagline": "Your economy is your weapon. Their army is on your doorstep.",
+    "briefing": "Kargovan drilling platforms have appeared in the disputed Helentian Shelf — 120 kilometres from Aralios' coast, well inside the contested zone. The Kargovan Directorate's military posture is overtly escalatory; forward deployments suggest they are prepared to enforce extraction by force. They are betting that Aralios lacks the military capacity to resist and that the international community won't intervene in time. Your advantages are economic weight, diplomatic legitimacy, and international exposure. Make this adventure too costly to complete. The clock is running.",
+    "conflict_phase": 3,
+    "player": {
+      "name": "Aralios",
+      "doctrine_label": "Defensive / Asymmetric Resilience",
+      "power": {
+        "military": 40,
+        "economic": 85,
+        "information": 62,
+        "political": 80,
+        "covert": 45
+      },
+      "domain_levels": {
+        "non_military": 1,
+        "information": 1,
+        "military": 2
+      }
+    },
+    "adversary": {
+      "name": "Kargovan Directorate",
+      "doctrine": "aggressive",
+      "doctrine_label": "Aggressive / Military Fait-Accompli",
+      "power": {
+        "military": 88,
+        "economic": 65,
+        "information": 52,
+        "political": 42,
+        "covert": 65
+      },
+      "domain_levels": {
+        "non_military": 3,
+        "information": 2,
+        "military": 3
+      }
+    },
+    "win_conditions": {
+      "player": [
+        {
+          "id": "economic_asphyxiation",
+          "label": "Economic Asphyxiation",
+          "description": "Coordinated sanctions and covert disruption drain Kargova's war machine dry.",
+          "check": "adversary_multi_below",
+          "dims": ["economic", "military"],
+          "thresholds": [18, 20],
+          "resolution_text": "The economic cost of Kargova's adventure has become unsurvivable. Sanctions have frozen the war chest and covert operations have degraded military readiness below operational threshold. The Directorate withdraws from the Helentian Shelf."
+        },
+        {
+          "id": "international_pariah",
+          "label": "International Pariah",
+          "description": "Global condemnation reaches critical mass — Kargova's political standing collapses and the campaign becomes untenable.",
+          "check": "adversary_dim_below",
+          "dim": "political",
+          "threshold": 12,
+          "resolution_text": "Kargova's seizure of the Helentian Shelf has been universally condemned. Diplomatic isolation, sanctions coalitions, and international legal proceedings have made continued operations politically untenable. The Directorate withdraws, facing a generation of pariah status."
+        }
+      ],
+      "adversary": [
+        {
+          "id": "military_fait_accompli",
+          "label": "Military Fait Accompli",
+          "description": "Aralios' military capacity and economic base are both destroyed — resistance is impossible.",
+          "check": "player_multi_below",
+          "dims": ["military", "economic"],
+          "thresholds": [12, 25],
+          "resolution_text": "Aralios' ability to resist has been dismantled. Military assets are degraded beyond utility and the economy can no longer fund countermeasures. The Helentian Shelf is Kargova's — extraction proceeds under military protection."
+        },
+        {
+          "id": "economic_strangulation",
+          "label": "Economic Strangulation",
+          "description": "Kargova's economic pressure and covert operations collapse Aralios' financial foundations.",
+          "check": "player_dim_below",
+          "dim": "economic",
+          "threshold": 18,
+          "resolution_text": "Aralios' economic strength — the foundation of its resistance strategy — has been systematically dismantled. Without the financial base to sustain international pressure or fund countermeasures, Aralios capitulates. Kargova secures the resource zone."
+        },
+        {
+          "id": "deadline_passed",
+          "label": "Deadline Passed",
+          "description": "Kargova completes extraction infrastructure before international pressure can cohere.",
+          "check": "adversary_survive_turns",
+          "min_turn": 13,
+          "min_avg": 50,
+          "resolution_text": "The Kargovan Directorate has bought enough time. Extraction infrastructure in the Helentian Shelf is now operational. The international response arrived too late — the fait accompli is complete, and reversing it would require military action no one is willing to take."
         }
       ]
     }
