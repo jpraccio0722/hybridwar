@@ -77,9 +77,9 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
               <thead>
                 <tr>
                   <th>Action</th>
-                  <th>Type / Risk</th>
-                  <th>Self Cost</th>
-                  <th>Enemy Effect</th>
+                  <th>Risk</th>
+                  <th>Cost</th>
+                  <th>Effect</th>
                   <th></th>
                 </tr>
               </thead>
@@ -99,16 +99,19 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
                         <div className="td-sub">{action.description}</div>
                         <div className="td-chips">
                           {action.attribution_risk > 0 && (
-                            <span className="cost-chip cost-chip--risk">
-                              Attr {Math.round(action.attribution_risk * 100)}%
+                            <span className="cost-chip">
+                              Attribution risk {Math.round(action.attribution_risk * 100)}%
                             </span>
                           )}
                           {action.counter_strike_risk > 0 && (
-                            <span className="cost-chip cost-chip--risk">
-                              CS {Math.round(action.counter_strike_risk * 100)}%
+                            <span className="cost-chip">
+                              Counter Strike Risk {Math.round(action.counter_strike_risk * 100)}%
                             </span>
                           )}
-                          <span className={`cost-chip ${REVERSIBILITY_CLASS[action.reversibility]}`}>
+                          {action.ongoing ? (
+                              <span className="cost-chip">Ongoing</span>
+                          ) : <span className="cost-chip">One Time</span> }
+                          <span className={`cost-chip`}>
                             {REVERSIBILITY_LABELS[action.reversibility]}
                           </span>
                         </div>
@@ -123,9 +126,6 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
                           {action.de_escalation && (
                             <span className="badge badge--deescalate">De-escalation</span>
                           )}
-                          {action.ongoing && (
-                            <span className="badge badge--ongoing">Ongoing</span>
-                          )}
                           {action.escalates_to >= 7 && !action.de_escalation && (
                             <span className="badge badge--kinetic">Kinetic</span>
                           )}
@@ -137,9 +137,10 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
                               const range = risk && !action.de_escalation
                                 ? getCostRange(amt, risk.costRange)
                                 : null
+                              const insufficient = (playerState.power[dim] ?? 0) < amt
                               return (
-                                <span key={dim} className="cost-chip cost-chip--self">
-                                  {range ? `−${range[0]}–${range[1]}` : `−${amt}`} {formatDim(dim)}
+                                <span key={dim} className={`cost-chip cost-chip--self${insufficient ? ' cost-chip--insufficient' : ''}`}>
+                                  {range ? `${range[0]} to ${range[1]}` : `${amt}`} {formatDim(dim)}
                                 </span>
                               )
                             })
@@ -153,7 +154,7 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
                                 : null
                               return (
                                 <span key={dim} className="cost-chip cost-chip--effect">
-                                  {range ? `−${range[0]}–${range[1]}` : `−${amt}`} {formatDim(dim)}
+                                  {range ? `-${range[0]} to -${range[1]}` : `-${amt}`} {formatDim(dim)}
                                 </span>
                               )
                             })
@@ -163,6 +164,8 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
                         <button
                           className={`btn ${action.de_escalation ? 'btn--secondary' : 'btn--primary'} btn--sm`}
                           onClick={() => onSelectAction(action)}
+                          disabled={!canAfford(action, playerState.power)}
+                          title={!canAfford(action, playerState.power) ? 'Insufficient power to execute' : undefined}
                           aria-label={`Execute: ${action.name}`}
                         >
                           Execute
@@ -178,6 +181,13 @@ export default function ActionMenu({ playerState, adversaryState, onSelectAction
       </div>
     </div>
   )
+}
+
+function canAfford(action, power) {
+  for (const [dim, amt] of Object.entries(action.self_cost ?? {})) {
+    if ((power[dim] ?? 0) < amt) return false
+  }
+  return true
 }
 
 function getCostRange(base, [min, max]) {

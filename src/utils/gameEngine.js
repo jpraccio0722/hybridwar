@@ -336,6 +336,7 @@ export function addActiveOperation(activeOps, action) {
     name: action.name,
     domain: action.domain,
     ongoing_self_cost: action.ongoing_self_cost,
+    ongoing_self_benefit: action.ongoing_self_benefit,
     ongoing_enemy_effect: action.ongoing_enemy_effect,
     forced_enemy_cost: action.forced_enemy_cost,
     turn_started: Date.now(),

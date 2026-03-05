@@ -260,8 +260,10 @@ function gameReducer(state, action) {
       const adversaryTick = tickActiveOperations(gs.adversary, gs.player)
 
       playerPower = applyPowerDelta(playerPower, playerTick.selfCosts)
+      playerPower = applyPowerGain(playerPower, playerTick.selfBenefits)
       adversaryPower = applyPowerDelta(adversaryPower, playerTick.enemyEffects)
       adversaryPower = applyPowerDelta(adversaryPower, adversaryTick.selfCosts)
+      adversaryPower = applyPowerGain(adversaryPower, adversaryTick.selfBenefits)
       playerPower = applyPowerDelta(playerPower, adversaryTick.enemyEffects)
 
       const playerForcedCosts = computeForcedCosts(gs.player.active_operations)

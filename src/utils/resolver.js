@@ -131,10 +131,13 @@ export function resolveAction(action, actor, adversary, isPlayer) {
     }
   }
 
-  // --- Apply self_benefit for de-escalation ---
-  if (action.self_benefit) {
+  // --- Apply self_benefit ---
+  // De-escalation: always applies (gesture has value regardless of outcome)
+  // Escalation: only applies on success or partial success
+  if (action.self_benefit && (action.de_escalation || result.success || result.partial)) {
+    const mult = (action.de_escalation || result.success) ? 1.0 : 0.5
     for (const [dim, amount] of Object.entries(action.self_benefit)) {
-      result.self_benefit[dim] = amount
+      result.self_benefit[dim] = Math.round(amount * mult)
     }
   }
 
@@ -298,6 +301,7 @@ function generateNarrative(action, result, isPlayer) {
 // Apply all ongoing active operations for a state (per-turn tick)
 export function tickActiveOperations(state, adversaryState) {
   const costsDelta = {}
+  const benefitsDelta = {}
   const effectsDelta = {}
 
   for (const op of state.active_operations) {
@@ -305,6 +309,12 @@ export function tickActiveOperations(state, adversaryState) {
     if (op.ongoing_self_cost) {
       for (const [dim, amount] of Object.entries(op.ongoing_self_cost)) {
         costsDelta[dim] = (costsDelta[dim] ?? 0) + amount
+      }
+    }
+    // Self benefits (positive regen for the actor)
+    if (op.ongoing_self_benefit) {
+      for (const [dim, amount] of Object.entries(op.ongoing_self_benefit)) {
+        benefitsDelta[dim] = (benefitsDelta[dim] ?? 0) + amount
       }
     }
     // Enemy effects
@@ -315,7 +325,7 @@ export function tickActiveOperations(state, adversaryState) {
     }
   }
 
-  return { selfCosts: costsDelta, enemyEffects: effectsDelta }
+  return { selfCosts: costsDelta, selfBenefits: benefitsDelta, enemyEffects: effectsDelta }
 }
 
 // Forced costs adversary pays just from your active operations
