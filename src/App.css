@@ -1186,11 +1186,6 @@ body {
   white-space: nowrap;
 }
 
-.conf--high     { background: var(--bg-success); color: var(--color-success); }
-.conf--moderate { background: #eff6ff; color: var(--color-info); }
-.conf--low      { background: var(--bg-warning); color: var(--color-warning); }
-.conf--very-low { background: var(--bg-danger); color: var(--color-danger); }
-
 .intel-footer {
   padding: var(--space-3) var(--space-4);
   background: var(--bg-surface-2);

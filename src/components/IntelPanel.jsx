@@ -44,7 +44,7 @@ export default function IntelPanel({ adversaryPower, intelligenceAccuracy, adver
                 <td className="td-label">{DIM_LABELS[dim]}</td>
                 <td><span className="intel-descriptor">"{descriptor}"</span></td>
                 <td>
-                  <span className={`conf-badge ${CONF_CLASS[confidence]}`}>
+                  <span className={`conf-badge`}>
                     {confidence.replace('_', ' ')}
                   </span>
                 </td>
