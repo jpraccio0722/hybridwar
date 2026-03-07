@@ -93,15 +93,40 @@ RED LINES:
 - Preserve deniability for covert operations`
 
 // ----------------------------------------------------------------
-// Domain level label helper
+// Qualitative label helpers — no raw numbers sent to the LLM
 // ----------------------------------------------------------------
 
 function domainLabel(level) {
-  if (level === 0) return 'Dormant (0/8)'
-  if (level <= 2) return `Latent (${level}/8)`
-  if (level <= 4) return `Active (${level}/8)`
-  if (level <= 6) return `Elevated (${level}/8)`
-  return `Critical (${level}/8)`
+  if (level === 0) return 'Dormant'
+  if (level <= 2) return 'Latent'
+  if (level <= 4) return 'Active'
+  if (level <= 6) return 'Elevated'
+  return 'Critical'
+}
+
+// How much an action costs you (drains from your own power)
+function costLabel(v) {
+  if (v <= 3)  return 'negligible'
+  if (v <= 7)  return 'minor'
+  if (v <= 12) return 'moderate'
+  if (v <= 18) return 'significant'
+  if (v <= 24) return 'severe'
+  return 'critical'
+}
+
+// How much damage / pressure an action inflicts on the enemy
+function effectLabel(v) {
+  if (v <= 3)  return 'marginal'
+  if (v <= 7)  return 'moderate'
+  if (v <= 12) return 'meaningful'
+  if (v <= 18) return 'severe'
+  if (v <= 24) return 'heavy'
+  return 'devastating'
+}
+
+const DIMENSION_LABELS = {
+  military: 'military', economic: 'economic',
+  information: 'information', political: 'political', covert: 'covert',
 }
 
 // ----------------------------------------------------------------
@@ -125,11 +150,15 @@ export function buildUserPrompt(adversaryState, playerState, turn, history, last
 
   const available = getAvailableActions(adversaryState, playerState)
 
-  // Format available actions list
+  // Format available actions list — qualitative language only, no raw numbers
   const actionLines = available.map((a, i) => {
-    const selfCostStr = Object.entries(a.self_cost ?? {}).map(([d, v]) => `-${v} ${d}`).join(', ') || 'none'
-    const enemyEffectStr = Object.entries(a.enemy_effect ?? {}).map(([d, v]) => `-${v} ${d}`).join(', ') || 'none'
-    return `  ${i + 1}. ${a.id} — ${a.name} (${a.domain}) | Cost: ${selfCostStr} | Effect on enemy: ${enemyEffectStr}${a.ongoing ? ' | ONGOING' : ''}`
+    const selfCostStr = Object.entries(a.self_cost ?? {})
+      .map(([d, v]) => `${costLabel(v)} ${DIMENSION_LABELS[d] ?? d} strain`)
+      .join(', ') || 'negligible'
+    const enemyEffectStr = Object.entries(a.enemy_effect ?? {})
+      .map(([d, v]) => `${effectLabel(v)} ${DIMENSION_LABELS[d] ?? d} damage`)
+      .join(', ') || 'negligible'
+    return `  ${i + 1}. ${a.id} — ${a.name} (${a.domain}) | Cost to you: ${selfCostStr} | Impact on enemy: ${enemyEffectStr}${a.ongoing ? ' | ONGOING' : ''}`
   }).join('\n')
 
   // Format active operations

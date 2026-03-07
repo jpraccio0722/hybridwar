@@ -1,4 +1,5 @@
 import { getAdvantageLabel } from '../utils/gameEngine'
+import { scoreToLabel } from '../utils/fogOfWar'
 
 const SEVERITY_CLASS = {
   info: 'cascade--info',
@@ -222,12 +223,6 @@ export default function Resolution({ gameState, resolution, turn, onNextTurn }) 
               {Object.entries(gameState.player.power).map(([dim, val]) => (
                 <div key={dim} className="summary-row">
                   <span className="summary-dim">{formatDimFull(dim)}</span>
-                  <div className="summary-bar-wrap">
-                    <div
-                      className={`summary-bar summary-bar--player ${getBarClass(val)}`}
-                      style={{ width: `${Math.max(2, val)}%` }}
-                    />
-                  </div>
                   <span className={`summary-val ${getValClass(val)}`}>{val}</span>
                 </div>
               ))}
@@ -237,13 +232,7 @@ export default function Resolution({ gameState, resolution, turn, onNextTurn }) 
               {Object.entries(gameState.adversary.power).map(([dim, val]) => (
                 <div key={dim} className="summary-row">
                   <span className="summary-dim">{formatDimFull(dim)}</span>
-                  <div className="summary-bar-wrap">
-                    <div
-                      className={`summary-bar summary-bar--adversary ${getBarClass(val)}`}
-                      style={{ width: `${Math.max(2, val)}%` }}
-                    />
-                  </div>
-                  <span className={`summary-val ${getValClass(val)}`}>{val}</span>
+                  <span className={`summary-val ${getValClass(val)}`}>{scoreToLabel(val, dim)}</span>
                 </div>
               ))}
             </div>

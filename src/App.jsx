@@ -5,6 +5,7 @@ import AIThinking from './components/AIThinking'
 import Resolution from './components/Resolution'
 import GameOver from './components/GameOver'
 import Login from './components/Login'
+import DebugDrawer from './components/DebugDrawer'
 import { supabase } from './lib/supabase'
 import {
   applyRegeneration,
@@ -22,6 +23,7 @@ import { aiSelectAction, getAvailableActions, generateDoctrineWeights } from './
 import { computeIntelligenceAccuracy } from './utils/fogOfWar'
 import { buildAIPayload, parseAIResponse } from './utils/aiPrompt'
 
+const DISABLE_AUTH = import.meta.env.VITE_DISABLE_AUTH === 'true'
 const EDGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-move`
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 const DEBUG_AI = import.meta.env.VITE_DEBUG_AI === 'true'
@@ -58,6 +60,7 @@ const initialAppState = {
   pendingAIState: null,
   lastResolution: null,
   gameOverResult: null,
+  debugLog: [],
 }
 
 // Shared resolution helper — used by both AI_MOVE_RESOLVED and AI_MOVE_FAILED
@@ -309,12 +312,17 @@ function gameReducer(state, action) {
     }
 
     case 'AI_MOVE_RESOLVED': {
-      const { aiAction, aiReasoning, aiPublicStatement, aiEscalationIntent } = action.payload
-      return resolveTurnWithAIAction(state, aiAction, aiReasoning, aiPublicStatement, aiEscalationIntent)
+      const { aiAction, aiReasoning, aiPublicStatement, aiEscalationIntent, debugEntry } = action.payload
+      const result = resolveTurnWithAIAction(state, aiAction, aiReasoning, aiPublicStatement, aiEscalationIntent)
+      if (debugEntry) {
+        return { ...result, debugLog: [...(state.debugLog ?? []), debugEntry] }
+      }
+      return result
     }
 
     case 'AI_MOVE_FAILED': {
       // Rule-based fallback — compute synchronously, then resolve
+      const { debugEntry } = action.payload ?? {}
       const gs = state.gameState
       const pending = state.pendingAIState
       if (!pending) return state
@@ -336,7 +344,12 @@ function gameReducer(state, action) {
         updatedPlayer,
         gs.intelligence_accuracy,
       )
-      return resolveTurnWithAIAction(state, aiAction, aiReasoning, '', 'hold')
+      const result = resolveTurnWithAIAction(state, aiAction, aiReasoning, '', 'hold')
+      if (debugEntry) {
+        const entry = { ...debugEntry, fallbackAction: aiAction?.id, source: 'fallback' }
+        return { ...result, debugLog: [...(state.debugLog ?? []), entry] }
+      }
+      return result
     }
 
     case 'NEXT_TURN': {
@@ -378,6 +391,7 @@ function gameReducer(state, action) {
 export default function App() {
   const [user, setUser] = useState(undefined) // undefined = loading
   const [state, dispatch] = useReducer(gameReducer, initialAppState)
+  const [debugOpen, setDebugOpen] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -420,6 +434,8 @@ export default function App() {
     )
 
     async function runAIMove() {
+      const turn = state.turn
+      const baseEntry = { turn, systemPrompt, userPrompt, timestamp: new Date().toISOString() }
       try {
         const responseData = await callEdgeFunction(systemPrompt, userPrompt)
         const parsed = parseAIResponse(responseData, availableActions)
@@ -431,15 +447,44 @@ export default function App() {
               aiReasoning: parsed.reasoning,
               aiPublicStatement: parsed.publicStatement,
               aiEscalationIntent: parsed.escalationIntent,
+              debugEntry: {
+                ...baseEntry,
+                source: 'llm',
+                actionId: responseData.actionId,
+                escalationIntent: responseData.escalation_intent ?? responseData.escalationIntent,
+                publicStatement: responseData.public_statement ?? responseData.publicStatement,
+                internalReasoning: responseData.internal_reasoning ?? responseData.internalReasoning,
+                rawResponse: responseData,
+              },
             },
           })
         } else {
           console.warn('LLM returned invalid action_id, falling back to rule-based AI')
-          dispatch({ type: 'AI_MOVE_FAILED' })
+          dispatch({
+            type: 'AI_MOVE_FAILED',
+            payload: {
+              debugEntry: {
+                ...baseEntry,
+                source: 'llm_parse_error',
+                actionId: responseData.actionId,
+                rawResponse: responseData,
+              },
+            },
+          })
         }
       } catch (err) {
         console.warn('LLM AI failed, falling back to rule-based AI:', err)
-        dispatch({ type: 'AI_MOVE_FAILED' })
+        dispatch({
+          type: 'AI_MOVE_FAILED',
+          payload: {
+            debugEntry: {
+              ...baseEntry,
+              source: 'llm_error',
+              error: String(err),
+              rawResponse: null,
+            },
+          },
+        })
       }
     }
 
@@ -466,8 +511,8 @@ export default function App() {
     dispatch({ type: 'RESTART' })
   }
 
-  if (user === undefined) return <div className="app-loading">Loading…</div>
-  if (user === null) return <Login />
+  if (!DISABLE_AUTH && user === undefined) return <div className="app-loading">Loading…</div>
+  if (!DISABLE_AUTH && user === null) return <Login />
 
   return (
     <div className="app-root">
@@ -504,6 +549,22 @@ export default function App() {
           turn={state.turn}
           onRestart={handleRestart}
         />
+      )}
+      {state.screen !== 'setup' && (
+        <>
+          <button
+            className="debug-toggle-btn"
+            onClick={() => setDebugOpen(true)}
+            title="Open AI debug log"
+          >
+            AI&nbsp;Debug
+          </button>
+          <DebugDrawer
+            log={state.debugLog}
+            open={debugOpen}
+            onClose={() => setDebugOpen(false)}
+          />
+        </>
       )}
     </div>
   )
