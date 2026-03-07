@@ -2333,6 +2333,130 @@ button:focus-visible,
 }
 
 /* ================================================================
+   Auth — Login screen
+   ================================================================ */
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-6);
+  background: var(--bg-base);
+}
+
+.login-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.login-header {
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.login-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-1);
+}
+
+.login-subtitle {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.login-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.login-input {
+  padding: 10px var(--space-3);
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.login-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.15);
+}
+
+.login-error {
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+  background: var(--bg-danger);
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.login-submit {
+  width: 100%;
+}
+
+/* Setup header row — logo + sign out */
+.setup-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-medium);
+}
+.btn--ghost:hover {
+  background: var(--bg-surface-3);
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+
+.btn--sm {
+  padding: 6px var(--space-3);
+  font-size: 0.8125rem;
+}
+
+/* ================================================================
    Print / reduced motion
    ================================================================ */
 @media (prefers-reduced-motion: reduce) {

@@ -1,9 +1,11 @@
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import Setup from './components/Setup'
 import Board from './components/Board'
 import AIThinking from './components/AIThinking'
 import Resolution from './components/Resolution'
 import GameOver from './components/GameOver'
+import Login from './components/Login'
+import { supabase } from './lib/supabase'
 import {
   applyRegeneration,
   applyPowerDelta,
@@ -374,7 +376,18 @@ function gameReducer(state, action) {
 }
 
 export default function App() {
+  const [user, setUser] = useState(undefined) // undefined = loading
   const [state, dispatch] = useReducer(gameReducer, initialAppState)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   // Async AI move — runs whenever we enter ai_thinking screen
   useEffect(() => {
@@ -453,10 +466,13 @@ export default function App() {
     dispatch({ type: 'RESTART' })
   }
 
+  if (user === undefined) return <div className="app-loading">Loading…</div>
+  if (user === null) return <Login />
+
   return (
     <div className="app-root">
       {state.screen === 'setup' && (
-        <Setup onStartGame={handleStartGame} />
+        <Setup onStartGame={handleStartGame} onLogout={() => supabase.auth.signOut()} />
       )}
       {state.screen === 'game' && state.gameState && (
         <Board

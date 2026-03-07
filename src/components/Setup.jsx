@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import scenarios from '../data/scenarios.json'
 
-export default function Setup({ onStartGame }) {
+export default function Setup({ onStartGame, onLogout }) {
   const [selected, setSelected] = useState(null)
 
   return (
     <div className="setup-screen">
       <header className="setup-header">
-        <div className="setup-logo">
-          <span className="logo-mark">Hybrid Warfare Simulator</span>
+        <div className="setup-header-row">
+          <div className="setup-logo">
+            <span className="logo-mark">Hybrid Warfare Simulator</span>
+          </div>
+          <button className="btn btn--ghost btn--sm" onClick={onLogout}>Sign Out</button>
         </div>
         <p className="setup-tagline">
           A turn-based strategic wargame grounded in the Gerasimov model of hybrid conflict.
