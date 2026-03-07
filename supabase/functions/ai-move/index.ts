@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import Anthropic from "npm:@anthropic-ai/sdk"
 
 const client = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
+const MODEL = Deno.env.get('AI_MODEL') ?? 'claude-haiku-4-5'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -28,7 +29,7 @@ const DECISION_TOOL: Anthropic.Tool = {
       },
       internal_reasoning: {
         type: 'string',
-        description: '1-2 sentences: why this fits your doctrine and priorities',
+        description: '2-3 sentences: why this fits your doctrine and priorities',
       },
     },
     required: ['action_id', 'escalation_intent', 'public_statement', 'internal_reasoning'],
@@ -44,7 +45,7 @@ Deno.serve(async (req) => {
     const { systemPrompt, userPrompt } = await req.json()
 
     const msg = await client.messages.create({
-      model: 'claude-haiku-4-5',
+      model: MODEL,
       max_tokens: 512,
       system: systemPrompt,
       tools: [DECISION_TOOL],

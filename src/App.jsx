@@ -511,6 +511,12 @@ export default function App() {
     dispatch({ type: 'RESTART' })
   }
 
+  const handleAbandon = () => {
+    if (window.confirm('Abandon this session and return to scenario selection?')) {
+      dispatch({ type: 'RESTART' })
+    }
+  }
+
   if (!DISABLE_AUTH && user === undefined) return <div className="app-loading">Loading…</div>
   if (!DISABLE_AUTH && user === null) return <Login />
 
@@ -549,6 +555,15 @@ export default function App() {
           turn={state.turn}
           onRestart={handleRestart}
         />
+      )}
+      {state.screen !== 'setup' && state.screen !== 'game_over' && (
+        <button
+          className="abandon-btn"
+          onClick={handleAbandon}
+          title="Abandon session and return to scenario selection"
+        >
+          &#x2715; Abandon
+        </button>
       )}
       {state.screen !== 'setup' && (
         <>

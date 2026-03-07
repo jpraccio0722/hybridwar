@@ -166,11 +166,51 @@ export function buildUserPrompt(adversaryState, playerState, turn, history, last
     ? adversaryState.active_operations.map(op => `  → ${op.name}: ${op.domain}, ongoing`).join('\n')
     : '  (none)'
 
-  // Last history entry
-  const lastHistory = history.length > 0 ? history[history.length - 1] : null
-  const lastOutcomeStr = lastHistory
-    ? `Turn ${lastHistory.turn}: You played ${lastHistory.adversary_action} (${lastHistory.adversary_success ? 'Success' : 'Partial/Failed'}). Adversary played ${lastHistory.player_action} (${lastHistory.player_success ? 'Success' : 'Partial/Failed'}).`
-    : 'This is the first turn.'
+  // Format last 3 turns of history qualitatively
+  const recentHistory = history.slice(-3)
+
+  function formatEffects(effectMap) {
+    const entries = Object.entries(effectMap ?? {}).filter(([, v]) => v > 0)
+    if (entries.length === 0) return 'no measurable effect'
+    return entries.map(([d, v]) => `${effectLabel(v)} ${DIMENSION_LABELS[d] ?? d} damage`).join(', ')
+  }
+
+  function formatCosts(costMap) {
+    const entries = Object.entries(costMap ?? {}).filter(([, v]) => v > 0)
+    if (entries.length === 0) return 'negligible cost'
+    return entries.map(([d, v]) => `${costLabel(v)} ${DIMENSION_LABELS[d] ?? d} strain`).join(', ')
+  }
+
+  function outcomeWord(success, partial) {
+    if (success) return 'succeeded'
+    if (partial) return 'partially succeeded'
+    return 'failed'
+  }
+
+  function advantageTrend(delta) {
+    if (delta > 5) return 'strategic advantage shifted in your favour'
+    if (delta > 0) return 'slight advantage gain'
+    if (delta < -5) return 'strategic advantage shifted against you'
+    if (delta < 0) return 'slight advantage loss'
+    return 'advantage held steady'
+  }
+
+  const historyLines = recentHistory.length === 0
+    ? ['  This is the first turn — no prior history.']
+    : recentHistory.map(h => {
+        const lines = [
+          `  TURN ${h.turn}:`,
+          `    YOUR ACTION: ${h.adversary_action} — ${outcomeWord(h.adversary_success, h.adversary_partial)}`,
+          `      → Inflicted on adversary: ${formatEffects(h.adversary_effect)}`,
+          `    ADVERSARY ACTION: ${h.player_action} — ${outcomeWord(h.player_success, h.player_partial)}`,
+          `      → Inflicted on you: ${formatEffects(h.player_effect)}`,
+          `      → Cost adversary paid: ${formatCosts(h.player_cost)}`,
+        ]
+        if (h.player_attribution) lines.push('      → Adversary operation was ATTRIBUTED (exposed)')
+        if (h.cascade_events?.length > 0) lines.push(`      → Cascade: ${h.cascade_events.join('; ')}`)
+        lines.push(`    NET RESULT: ${advantageTrend(h.advantage_delta ?? 0)}`)
+        return lines.join('\n')
+      })
 
   // Intelligence confidence labels
   const confidenceNote = (conf) => conf === 'HIGH' ? '' : ` [CONFIDENCE: ${conf}]`
@@ -200,17 +240,17 @@ export function buildUserPrompt(adversaryState, playerState, turn, history, last
     `  Information:  ${domainLabel(adversaryState.domain_levels.information ?? 0)}`,
     `  Military:     ${domainLabel(adversaryState.domain_levels.military ?? 0)}`,
     '',
-    'LAST TURN OUTCOME:',
-    `  ${lastOutcomeStr}`,
+    `RECENT HISTORY (last ${recentHistory.length} turn${recentHistory.length !== 1 ? 's' : ''}):`,
+    ...historyLines,
     '',
-    `ADVERSARY'S LAST ACTION:`,
+    `ADVERSARY'S MOST RECENT ACTION:`,
     `  ${lastPlayerActionName ?? '(unknown)'}`,
     '',
     'YOUR AVAILABLE ACTIONS:',
     actionLines,
     '',
     '---',
-    'Select the action that best fits your doctrine and current strategic situation.',
+    'Consider the full history above when selecting your action. Identify patterns in adversary behaviour, momentum shifts, and whether your recent operations are producing cumulative effect or failing to land. Select the action that best fits your doctrine and the evolving strategic situation.',
   ]
 
   return lines.join('\n')

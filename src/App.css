@@ -2470,6 +2470,28 @@ button:focus-visible,
    Debug Drawer
    ================================================================ */
 
+.abandon-btn {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 100;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.7rem;
+  font-family: monospace;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+.abandon-btn:hover {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
 .debug-toggle-btn {
   position: fixed;
   bottom: 1rem;
